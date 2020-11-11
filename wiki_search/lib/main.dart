@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:wiki_search/bloc/list/list_bloc.dart';
+import 'package:wiki_search/bloc/list/list_state.dart';
+import 'package:wiki_search/network/network.dart';
 import 'package:wiki_search/ui/list_screen.dart';
 import 'package:wiki_search/ui/web_screen.dart';
 import 'package:wiki_search/utils/app_routes.dart';
@@ -15,6 +19,8 @@ void main() {
 }
 
 class WikiSearchApp extends StatelessWidget {
+  final NetworkService _networkService = NetworkService();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -38,7 +44,10 @@ class WikiSearchApp extends StatelessWidget {
   }
 
   Widget _listScreen(BuildContext context) {
-    return ListScreen();
+    return BlocProvider(
+      create: (context) => ListBloc(InitialListState(), _networkService),
+      child: ListScreen(),
+    );
   }
 
   Widget _webScreen(BuildContext context) {
