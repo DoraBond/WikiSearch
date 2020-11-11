@@ -24,6 +24,7 @@ class _SearchInputState extends State<SearchInput> {
     return TextField(
       controller: widget.controller,
       decoration: InputDecoration(
+        isDense: true,
           enabledBorder: OutlineInputBorder(
               borderSide:
                   BorderSide(color: AppColors.inputBorderColor, width: 2),

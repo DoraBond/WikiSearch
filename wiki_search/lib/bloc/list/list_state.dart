@@ -20,10 +20,11 @@ class DataLoadErrorListState extends ListState {
 }
 
 class DataLoadedListState extends ListState {
-  final List<SearchResult> results;
+  final List<SearchResultItem> results;
+  final bool continueSearch;
 
-  DataLoadedListState(this.results);
+  DataLoadedListState(this.results,this.continueSearch);
 
   @override
-  List<Object> get props => [results];
+  List<Object> get props => [results, this.continueSearch];
 }

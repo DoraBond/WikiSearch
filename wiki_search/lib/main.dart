@@ -11,6 +11,7 @@ import 'package:wiki_search/utils/app_routes.dart';
 import 'package:wiki_search/utils/localization.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -24,7 +25,6 @@ class WikiSearchApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: AppLocalization.of(context).appTitle,
         theme: ThemeData(
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -35,7 +35,8 @@ class WikiSearchApp extends StatelessWidget {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: [const Locale('en', '')],
+        onGenerateTitle: (context) => AppLocalization.of(context).appTitle,
+        supportedLocales: [Locale('en', '')],
         initialRoute: AppRoute.LIST,
         routes: {
           AppRoute.LIST: (context) => _listScreen(context),

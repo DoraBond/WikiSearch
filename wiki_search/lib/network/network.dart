@@ -10,15 +10,42 @@ class NetworkService {
   final _dio = Dio();
   final _BASE_URL = 'https://en.wikipedia.org/';
 
-  Future<NetworkResponse<List<SearchResult>>> getSearchList() async {
-    return _get('w/api.php');
+  Future<NetworkResponse<SearchResult>> getSearchList(String search, int limit,
+      int offset) async {
+    return await _get('w/api.php', query: {
+      "action": "query",
+      "formatversion": 2,
+      "format": "json",
+      "prop": "pageimages|pageterms",
+      "generator": "prefixsearch",
+      "redirects": 1,
+      "piprop": "thumbnail",
+      "pithumbsize": "50",
+      "pilimit": 10,
+      "wbptterms": "description",
+      "gpssearch": search,
+      "gpslimit": limit,
+      "gpsoffset": offset
+    }, mappingFun: (json) {
+      if (json == null ||
+          !json.containsKey('query') ||
+          !(json['query'] as Map).containsKey('pages') ||
+          json['query']['pages'] == null) return null;
+
+      List pages = json['query']['pages'];
+      return SearchResult(
+          pages.map((e) => SearchResultItem.fromJson(e)).toList(),
+          json.containsKey('continue') ? true : false);
+    });
   }
 
-  Future<NetworkResponse> _get<T>(String endpoint,
+  Future<NetworkResponse<T>> _get<T>(String endpoint,
       {MappingFun<T> mappingFun, Map<String, dynamic> query}) async {
+    print('START HTTP GET ${_BASE_URL + endpoint}');
     Response response =
-        await _dio.get(_BASE_URL + endpoint, queryParameters: query);
+    await _dio.get(_BASE_URL + endpoint, queryParameters: query);
 
+    print(response.toString());
     if (response.statusCode != 200) {
       return NetworkResponse(errorCode: response.statusCode);
     } else {
