@@ -23,13 +23,14 @@ class _ListScreenState extends State<ListScreen> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   Timer _searchTimer;
+  String _search = '';
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) searchData();
+          _scrollController.position.maxScrollExtent) searchData(loadNext: true);
     });
     _controller.addListener(() {
       _searchTimer?.cancel();
@@ -88,8 +89,9 @@ class _ListScreenState extends State<ListScreen> {
     );
   }
 
-  void searchData() {
-    if (_controller.text.length > 2) {
+  void searchData({bool loadNext=false}) {
+    if (_controller.text.length > 2 && (_search!= _controller.text || loadNext)) {
+      _search = _controller.text;
       BlocProvider.of<ListBloc>(context)
           .add(SearchDataListEvent(_controller.text));
       FocusScope.of(context).requestFocus(FocusNode());
