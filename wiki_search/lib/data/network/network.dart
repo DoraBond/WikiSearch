@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:wiki_search/model/search_result.dart';
-import 'package:wiki_search/network/network_response.dart';
+
+import 'network_response.dart';
 
 typedef T MappingFun<T>(Map<String, dynamic> json);
 

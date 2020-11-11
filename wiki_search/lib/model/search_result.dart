@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
+import 'package:wiki_search/data/database/respository_provider.dart';
 
 class SearchResult extends Equatable {
   final List<SearchResultItem> items;
@@ -31,6 +34,27 @@ class SearchResultItem extends Equatable {
           : []
       ..thumbnail =
           json.containsKey('thumbnail') ? json['thumbnail']['source'] : null;
+  }
+
+  factory SearchResultItem.fromRepoMap(Map row) {
+    return SearchResultItem()
+      ..pageid = row[RepoProvider.REQUESTS_RESULTS_PAGEID]
+      ..title = row[RepoProvider.REQUESTS_RESULTS_TITLE]
+      ..descriptions = row[RepoProvider.REQUESTS_RESULTS_DESCRIPTIONS] != null
+          ? (json.decode(row[RepoProvider.REQUESTS_RESULTS_DESCRIPTIONS]) as List).map((e) => e.toString()).toList()
+          : []
+      ..thumbnail = row[RepoProvider.REQUESTS_RESULTS_THUMBNAIL];
+  }
+
+  Map<String,dynamic> toRepoMap(num requestId) {
+    return {
+      RepoProvider.REQUESTS_RESULTS_PAGEID: pageid,
+      RepoProvider.REQUESTS_RESULTS_DESCRIPTIONS:
+          descriptions != null ? json.encode(descriptions) : null,
+      RepoProvider.REQUESTS_RESULTS_REQUEST_ID: requestId,
+      RepoProvider.REQUESTS_RESULTS_THUMBNAIL: thumbnail,
+      RepoProvider.REQUESTS_RESULTS_TITLE: title
+    };
   }
 
   @override
