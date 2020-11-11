@@ -21,11 +21,16 @@ class ListScreen extends StatefulWidget {
 
 class _ListScreenState extends State<ListScreen> {
   final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   Timer _searchTimer;
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) searchData();
+    });
     _controller.addListener(() {
       _searchTimer?.cancel();
       _searchTimer = Timer(Duration(milliseconds: 500), searchData);
@@ -35,38 +40,48 @@ class _ListScreenState extends State<ListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalization.of(context).appTitle),
-        backgroundColor: AppColors.primaryColor,
-      ),
+        appBar: AppBar(
+          title: Text(AppLocalization.of(context).appTitle),
+          backgroundColor: AppColors.primaryColor,
+        ),
         body: Padding(
           padding: EdgeInsets.all(16.0),
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.max,
               children: [
-            SearchInput(controller: _controller,),
-            BlocBuilder<ListBloc, ListState>(
-              builder: (context, state) {
-                if (state is LoadingListState) return LoadingView();
-                if (state is DataLoadErrorListState)
-                  return ErrorView(code: state.code);
-                if (state is DataLoadedListState) {
-                  return _getSearchResultWidget(state.results);
-                }
-                return SizedBox.shrink();
-              },
-            )
-          ]),
+                SearchInput(
+                  controller: _controller,
+                ),
+                BlocBuilder<ListBloc, ListState>(
+                  builder: (context, state) {
+                    if (state is LoadingListState) return LoadingView();
+                    if (state is DataLoadErrorListState)
+                      return ErrorView(code: state.code);
+                    if (state is DataLoadedListState) {
+                      return _getSearchResultWidget(
+                          state.results, state.continueSearch);
+                    }
+                    return SizedBox.shrink();
+                  },
+                )
+              ]),
         ));
   }
 
-  Widget _getSearchResultWidget(List<SearchResultItem> results) {
-    return ListView.separated(
-        itemCount: results.length,
-        itemBuilder: (context, position) =>
-            SearchResultWidget(results[position]),
-        separatorBuilder: (context, position) => SizedBox(height: 10));
+  Widget _getSearchResultWidget(
+      List<SearchResultItem> results, bool continueSearch) {
+    return Expanded(
+      child: ListView.separated(
+          controller: _scrollController,
+          shrinkWrap: true,
+          itemCount: continueSearch ? results.length + 1 : results.length,
+          itemBuilder: (context, position) =>
+              continueSearch && position == results.length
+                  ? LoadingView()
+                  : SearchResultWidget(results[position]),
+          separatorBuilder: (context, position) => SizedBox(height: 10)),
+    );
   }
 
   void searchData() {

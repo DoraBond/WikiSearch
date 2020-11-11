@@ -12,19 +12,25 @@ class ListBloc extends Bloc<ListEvent, ListState> {
   int _limit = 10;
   int _offset = 0;
   bool _continueSearch = true;
+  String _searchData;
 
   ListBloc(ListState initialState, this._networkService) : super(initialState);
 
   @override
   Stream<ListState> mapEventToState(ListEvent event) async* {
     if (event is SearchDataListEvent) {
-      yield LoadingListState();
+      //yield LoadingListState();
       ListState newState = await _loadData(event.search).catchError(onError);
-      yield newState ?? DataLoadedListState([], false);
+      yield newState ?? DataLoadedListState([],0, false);
     }
   }
 
   Future<ListState> _loadData(String search) async {
+    if (_searchData != search) {
+      _offset = 0;
+      _results.clear();
+      _searchData = search;
+    }
     NetworkResponse<SearchResult> response =
         await _networkService.getSearchList(search, _limit, _offset);
 
@@ -35,6 +41,6 @@ class ListBloc extends Bloc<ListEvent, ListState> {
     _offset += _limit;
     _continueSearch = response.data.continueSearch;
 
-    return DataLoadedListState(_results, _continueSearch);
+    return DataLoadedListState(_results, _results.length, _continueSearch);
   }
 }
