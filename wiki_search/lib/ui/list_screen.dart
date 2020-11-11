@@ -74,6 +74,7 @@ class _ListScreenState extends State<ListScreen> {
 
   Widget _getSearchResultWidget(
       List<SearchResultItem> results, bool continueSearch) {
+    if (results.isNotEmpty) FocusScope.of(context).requestFocus(FocusNode());
     return Expanded(
       child: ListView.separated(
           controller: _scrollController,
@@ -96,7 +97,6 @@ class _ListScreenState extends State<ListScreen> {
       _search = _controller.text;
       BlocProvider.of<ListBloc>(context)
           .add(SearchDataListEvent(_controller.text));
-      FocusScope.of(context).requestFocus(FocusNode());
     }
   }
 
