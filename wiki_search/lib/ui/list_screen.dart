@@ -54,6 +54,7 @@ class _ListScreenState extends State<ListScreen> {
                 SearchInput(
                   controller: _controller,
                 ),
+                SizedBox(height: 16),
                 BlocBuilder<ListBloc, ListState>(
                   builder: (context, state) {
                     if (state is LoadingListState) return LoadingView();

@@ -25,14 +25,18 @@ class SearchResultWidget extends StatelessWidget {
           SizedBox(width: 16),
           Expanded(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(searchResult.title, softWrap: true),
+                  Text(searchResult.title, softWrap: true, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 5),
                   searchResult.descriptions != null &&
                           searchResult.descriptions.isNotEmpty
                       ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: searchResult.descriptions
-                              .map((e) => Text(e, softWrap: true))
+                              .map((e) => Text(e, softWrap: true, textAlign: TextAlign.left,))
                               .toList())
                       : SizedBox.shrink()
                 ]),
