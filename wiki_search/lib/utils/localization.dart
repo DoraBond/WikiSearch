@@ -21,6 +21,15 @@ class AppLocalization {
   String get appTitle {
     return Intl.message('Wiki Search', name: 'appTitle');
   }
+
+  String get httpErrorCode {
+    return Intl.message('Error: ', name: 'httpErrorCode');
+  }
+
+  String get emptyResults {
+    return Intl.message('No results found', name: 'emptyResults');
+  }
+
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalization> {
