@@ -30,7 +30,8 @@ class _ListScreenState extends State<ListScreen> {
     super.initState();
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) searchData(loadNext: true);
+          _scrollController.position.maxScrollExtent)
+        searchData(loadNext: true);
     });
     _controller.addListener(() {
       _searchTimer?.cancel();
@@ -90,8 +91,8 @@ class _ListScreenState extends State<ListScreen> {
     );
   }
 
-  void searchData({bool loadNext=false}) {
-    if (_controller.text.length > 2 && (_search!= _controller.text || loadNext)) {
+  void searchData({bool loadNext = false}) {
+    if (_search != _controller.text || loadNext) {
       _search = _controller.text;
       BlocProvider.of<ListBloc>(context)
           .add(SearchDataListEvent(_controller.text));
@@ -100,7 +101,6 @@ class _ListScreenState extends State<ListScreen> {
   }
 
   void _launchWikiPage(num pageId) {
-    BlocProvider.of<ListBloc>(context)
-        .add(LaunchItemListEvent(pageId));
+    BlocProvider.of<ListBloc>(context).add(LaunchItemListEvent(pageId));
   }
 }

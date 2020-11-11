@@ -16,27 +16,40 @@ class SearchResultWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         children: [
           Container(
-            width: 100,
-            height: 100,
-            child: searchResult.thumbnail != null
-                ? CachedNetworkImage(imageUrl: searchResult.thumbnail,fit: BoxFit.cover)
-                : Container(color: AppColors.picturePlaceholderColor),
-          ),
+              width: 100,
+              height: 100,
+              child: searchResult.thumbnail != null
+                  ? CachedNetworkImage(
+                      imageUrl: searchResult.thumbnail, fit: BoxFit.cover)
+                  : Container(
+                      color: AppColors.picturePlaceholderColor,
+                      child: Center(
+                        child: Icon(Icons.photo,
+                        color: Colors.grey,
+                        size: 30),
+                      ))),
           SizedBox(width: 16),
           Expanded(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(searchResult.title, softWrap: true, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  Text(searchResult.title,
+                      softWrap: true,
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   SizedBox(height: 5),
                   searchResult.descriptions != null &&
                           searchResult.descriptions.isNotEmpty
                       ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: searchResult.descriptions
-                              .map((e) => Text(e, softWrap: true, textAlign: TextAlign.left,))
+                              .map((e) => Text(
+                                    e,
+                                    softWrap: true,
+                                    textAlign: TextAlign.left,
+                                  ))
                               .toList())
                       : SizedBox.shrink()
                 ]),

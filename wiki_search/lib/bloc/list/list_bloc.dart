@@ -25,8 +25,12 @@ class ListBloc extends Bloc<ListEvent, ListState> {
   @override
   Stream<ListState> mapEventToState(ListEvent event) async* {
     if (event is SearchDataListEvent) {
-      ListState newState = await _loadData(event.search).catchError(onError);
-      yield newState ?? DataLoadedListState([], 0, event.search, false);
+      if (event.search.length < 2)
+        yield DataLoadedListState([], 0, event.search, false);
+      else {
+        ListState newState = await _loadData(event.search).catchError(onError);
+        yield newState ?? DataLoadedListState([], 0, event.search, false);
+      }
     } else if (event is LaunchItemListEvent) {
       yield await _loadItemUrl(event.pageid);
     }
