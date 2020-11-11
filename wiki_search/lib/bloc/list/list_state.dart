@@ -22,10 +22,11 @@ class DataLoadErrorListState extends ListState {
 class DataLoadedListState extends ListState {
   final List<SearchResultItem> results;
   final resultsCount;
+  final searchData;
   final bool continueSearch;
 
-  DataLoadedListState(this.results, this.resultsCount, this.continueSearch);
+  DataLoadedListState(this.results, this.resultsCount, this.searchData,this.continueSearch);
 
   @override
-  List<Object> get props => [results, continueSearch, resultsCount];
+  List<Object> get props => [results, continueSearch, resultsCount, searchData];
 }

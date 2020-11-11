@@ -13,3 +13,12 @@ class SearchDataListEvent extends ListEvent {
   @override
   List<Object> get props => [search];
 }
+
+class LaunchItemListEvent extends ListEvent{
+  final num pageid;
+
+  LaunchItemListEvent(this.pageid);
+
+  @override
+  List<Object> get props => [pageid];
+}

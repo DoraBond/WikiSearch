@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wiki_search/bloc/list/list_event.dart';
 import 'package:wiki_search/bloc/list/list_state.dart';
 import 'package:wiki_search/model/search_result.dart';
@@ -19,10 +20,23 @@ class ListBloc extends Bloc<ListEvent, ListState> {
   @override
   Stream<ListState> mapEventToState(ListEvent event) async* {
     if (event is SearchDataListEvent) {
-      //yield LoadingListState();
       ListState newState = await _loadData(event.search).catchError(onError);
-      yield newState ?? DataLoadedListState([],0, false);
+      yield newState ?? DataLoadedListState([], 0, event.search, false);
+    } else if (event is LaunchItemListEvent) {
+      yield await _loadItemUrl(event.pageid);
     }
+  }
+
+  Future<ListState> _loadItemUrl(num pageid) async {
+    NetworkResponse<String> response =
+        await _networkService.getWikiPageUrl(pageid).catchError(onError);
+
+    if (response.errorCode != null || response.data == null)
+      return DataLoadErrorListState(code: response.errorCode);
+
+    String wikiUrl = response.data;
+    if (wikiUrl != null) launch(wikiUrl);
+    return state;
   }
 
   Future<ListState> _loadData(String search) async {
@@ -41,6 +55,7 @@ class ListBloc extends Bloc<ListEvent, ListState> {
     _offset += _limit;
     _continueSearch = response.data.continueSearch;
 
-    return DataLoadedListState(_results, _results.length, _continueSearch);
+    return DataLoadedListState(
+        _results, _results.length, _searchData, _continueSearch);
   }
 }

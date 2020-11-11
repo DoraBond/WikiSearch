@@ -79,14 +79,25 @@ class _ListScreenState extends State<ListScreen> {
           itemBuilder: (context, position) =>
               continueSearch && position == results.length
                   ? LoadingView()
-                  : SearchResultWidget(results[position]),
+                  : InkWell(
+                      onTap: () {
+                        _launchWikiPage(results[position].pageid);
+                      },
+                      child: SearchResultWidget(results[position])),
           separatorBuilder: (context, position) => SizedBox(height: 10)),
     );
   }
 
   void searchData() {
-    if (_controller.text.length > 2)
+    if (_controller.text.length > 2) {
       BlocProvider.of<ListBloc>(context)
           .add(SearchDataListEvent(_controller.text));
+      FocusScope.of(context).requestFocus(FocusNode());
+    }
+  }
+
+  void _launchWikiPage(num pageId) {
+    BlocProvider.of<ListBloc>(context)
+        .add(LaunchItemListEvent(pageId));
   }
 }

@@ -6,7 +6,6 @@ import 'package:wiki_search/bloc/list/list_bloc.dart';
 import 'package:wiki_search/bloc/list/list_state.dart';
 import 'package:wiki_search/network/network.dart';
 import 'package:wiki_search/ui/list_screen.dart';
-import 'package:wiki_search/ui/web_screen.dart';
 import 'package:wiki_search/utils/app_routes.dart';
 import 'package:wiki_search/utils/localization.dart';
 
@@ -40,7 +39,6 @@ class WikiSearchApp extends StatelessWidget {
         initialRoute: AppRoute.LIST,
         routes: {
           AppRoute.LIST: (context) => _listScreen(context),
-          AppRoute.WEB: (context) => _webScreen(context),
         });
   }
 
@@ -51,7 +49,4 @@ class WikiSearchApp extends StatelessWidget {
     );
   }
 
-  Widget _webScreen(BuildContext context) {
-    return WebScreen();
-  }
 }

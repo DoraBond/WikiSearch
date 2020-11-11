@@ -39,6 +39,26 @@ class NetworkService {
     });
   }
 
+  Future<NetworkResponse<String>> getWikiPageUrl(num pageid) async {
+    return await _get('w/api.php', query: {
+      "action": "query",
+      "format": "json",
+      "prop": "info",
+      "pageids": pageid,
+      "inprop": "url"
+    }, mappingFun: (json) {
+      if (json == null) return null;
+      if (!json.containsKey('query') ||
+          !(json['query'] as Map).containsKey('pages') ||
+          json['query']['pages'] == null) return null;
+
+      Map pages = json['query']['pages'];
+      Map page = pages[pageid.toString()];
+
+      return page != null ? page['fullurl'] : null;
+    });
+  }
+
   Future<NetworkResponse<T>> _get<T>(String endpoint,
       {MappingFun<T> mappingFun, Map<String, dynamic> query}) async {
     print('START HTTP GET ${_BASE_URL + endpoint}');
